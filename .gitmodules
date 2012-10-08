@@ -1,0 +1,3 @@
+[submodule "duino"]
+	path = duino
+	url = https://github.com/rushton/duino
