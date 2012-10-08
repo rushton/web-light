@@ -27,5 +27,6 @@ app.configure('development', function(){
 });
 
 app.get('/', routes.index);
-app.get('/set/:color',routes.setColor);
+app.get('/transition/:color',routes.transition);
+app.get('/set/:color',routes.set);
 app.listen(3000);
