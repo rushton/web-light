@@ -29,4 +29,6 @@ app.configure('development', function(){
 app.get('/', routes.index);
 app.get('/transition/:color',routes.transition);
 app.get('/set/:color',routes.set);
+app.get('/notify',routes.notify);
+
 app.listen(app.get('port'));
