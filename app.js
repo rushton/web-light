@@ -26,9 +26,11 @@ app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
+app.get('*', routes.clearLedInterval);
 app.get('/', routes.index);
 app.get('/transition/:color',routes.transition);
 app.get('/set/:color',routes.set);
 app.get('/notify',routes.notify);
+app.get('/randomdisplay',routes.randomColors);
 
 app.listen(app.get('port'));
