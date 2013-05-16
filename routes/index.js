@@ -1,8 +1,10 @@
 
-var arduino = require('../duino'),
+var arduino = require('duino'),
+    rgbled = require('./rgbled.js'),
     board = new arduino.Board({debug:false}),
-    led = new arduino.RgbLed({board:board,red:3,green:5,blue:6}),
+    led = new rgbled({board:board,red:3,green:5,blue:6}),
     interval = null;
+    
 
 /*
  * GET home page.
@@ -49,7 +51,6 @@ function randomColors (req,res) {
    }, 2500);
    res.send({status:'success'});
 }
-
 
 exports.transition = transition;
 exports.set = set;
