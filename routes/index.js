@@ -1,7 +1,8 @@
 
-var arduino = require('duino'),
+var arduino = require('../duino'),
     rgbled = require('./rgbled.js'),
     board = new arduino.Board({debug:false}),
+    sound = new arduino.Sound({board:board}), 
     led = new rgbled({board:board,red:3,green:5,blue:6}),
     interval = null;
     
@@ -52,8 +53,13 @@ function randomColors (req,res) {
    res.send({status:'success'});
 }
 
+function play (req,res) {
+   sound.tone(req.params.tone,req.params.duration);
+   res.send({status:'success'});
+}
 exports.transition = transition;
 exports.set = set;
 exports.notify = notify;
 exports.randomColors = randomColors;
 exports.clearLedInterval = clearLedInterval;
+exports.play = play;
