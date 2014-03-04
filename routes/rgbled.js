@@ -4,8 +4,7 @@ var RgbLed = function(options) {
 	this.red =   options.red || 3;
     this.green = options.green || 5;
 	this.blue =  options.blue || 6;
-    this.isCommonAnode = true;
-    console.log(this.blue);
+    this.isCommonAnode = false;
     this.board.pinMode(this.red,'out');
     this.board.pinMode(this.green,'out');
     this.board.pinMode(this.blue,'out');
@@ -27,8 +26,7 @@ RgbLed.prototype.hexToRgb = function (hex){
 		hex = hexArray.join('');
     }
 
-	console.log(this.isCommonAnode);
-    var inverse = this.isCommonAnode ? 255 : 0;
+   var inverse = this.isCommonAnode ? 255 : 0;
 	var r = Math.abs(parseInt(hex[0] + hex[1], 16));
 	var g = Math.abs(parseInt(hex[2] + hex[3], 16));
 	var b = Math.abs(parseInt(hex[4] + hex[5], 16));
@@ -49,35 +47,36 @@ RgbLed.prototype.set = function (hex) {
 	this.previousColors = {red: rgb.red, green: rgb.green, blue: rgb.blue};
 } // set
 
-RgbLed.prototype.transitionTo = function(hex){
-    var self = this;
-	var fromColors = {red:   this.previousColors.red, 
-					  green: this.previousColors.green, 
-					  blue:  this.previousColors.blue};
-    var toColors = this.hexToRgb(hex);	
-	var direction = {red: fromColors.red > toColors.red ? -1 : 1,
-					 green: fromColors.green > toColors.green ? -1 : 1,
-					 blue: fromColors.blue > toColors.blue ? -1 : 1};
-	(function(){
-		var interval = setInterval(fadeUp,5);
+RgbLed.prototype.transitionTo = function(hex, time){
+   var self = this;
+   time = time || 1000;
+   time_counter = 0;
+   var toColors = this.hexToRgb(hex);	
+	var from = [this.previousColors.red,
+	            this.previousColors.green,
+	            this.previousColors.blue];
+	var to = [toColors.red,
+		       toColors.green,
+		       toColors.blue]
+   this.previousColors = toColors
+	var interval = setInterval(function(){
+      var percent = time_counter / time;
+      var new_rgb = interpolate_rgb(from, to, percent);
+      self.board.analogWrite(self.red, new_rgb[0]);  
+      self.board.analogWrite(self.green, new_rgb[1]);  
+      self.board.analogWrite(self.blue, new_rgb[2]);  
+      if (time_counter >= time) {
+         clearInterval(interval)
+      }  
+      time_counter += 5 
+   },5);
 
-	    function fadeUp(){
-			if (fromColors.red === toColors.red && 
-				fromColors.green === toColors.green && 
-				fromColors.blue === toColors.blue){ 
-				self.previousColors = {red: toColors.red, green: toColors.green, blue: toColors.blue};
-				clearInterval(interval); 
-				return;
-			}	
-			for (var key in fromColors){
-				if (fromColors[key] !== toColors[key]){
-					fromColors[key] += direction[key]; 
-					self.board.analogWrite(self[key], fromColors[key]); 
-				}
-			}
-		}
-	})();
 	
 }
-
+function interpolate_rgb(rgb_start, rgb_target, percent){
+    percent = Math.min(1, percent)
+    return [Math.abs(Math.floor(rgb_start[0] + ((rgb_target[0] - rgb_start[0])*percent))),
+           Math.abs(Math.floor(rgb_start[1] + ((rgb_target[1] - rgb_start[1])*percent))),
+           Math.abs(Math.floor(rgb_start[2] + ((rgb_target[2] - rgb_start[2])*percent)))]
+}
 module.exports = RgbLed;

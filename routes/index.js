@@ -3,7 +3,7 @@ var arduino = require('../duino'),
     rgbled = require('./rgbled.js'),
     board = new arduino.Board({debug:false}),
     sound = new arduino.Sound({board:board}), 
-    led = new rgbled({board:board,red:3,green:5,blue:6}),
+    leds = [new rgbled({board:board,red:3,green:5,blue:6}),new rgbled({board:board,red:9,green:10,blue:11})],
     interval = null;
     
 
@@ -19,13 +19,14 @@ function clearLedInterval(req,res,next) {
    next();
 }
 function set(req,res){
-   led.set(req.params.color);
+   leds[req.params.num].set(req.params.color);
    res.send({status: 'success',color:req.params.color});
 }
 
 function transition(req,res){
-   led.transitionTo(req.params.color);
-   res.send({status: 'success',color:req.params.color});
+   req.params.time = req.params.time || 1000
+   leds[req.params.num].transitionTo(req.params.color, req.params.time);
+   res.send({status: 'success',color:req.params.color, time: req.params.time});
 }
 
 function notify(req,res){
