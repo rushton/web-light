@@ -9,5 +9,6 @@
     "express": "3.0.0rc4",
     "ejs": "*",
     "duino": "0.0.7"
-  }
+  },
+  "engine": "node 0.10.5"
 }

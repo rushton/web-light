@@ -1,3 +1,4 @@
+#!/usr/bin/node
 /**
  * Module dependencies.
  */
@@ -31,8 +32,8 @@ app.get('/', routes.index);
 app.get('/transition/:num/:color',routes.transition);
 app.get('/transition/:num/:color/:time',routes.transition);
 app.get('/set/:num/:color',routes.set);
-app.get('/notify',routes.notify);
-app.get('/randomdisplay',routes.randomColors);
+app.get('/notify/:num',routes.notify);
+app.get('/randomdisplay/:num',routes.randomColors);
 app.get('/play/:tone/:duration',routes.play);
 
 app.listen(app.get('port'));
